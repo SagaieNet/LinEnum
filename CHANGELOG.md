@@ -2,6 +2,11 @@
 
 Note: Export functionality is currently in the experimental stage.
 
+## V0.7.1 (release 27-01-2014)
+* Fixed the most major bugs to get it working on OS X
+** Removed -r arguments for xargs
+** Disabled some features on OS X (like last login)
+
 ## V0.5 (release 27-01-2014)
 Additions
 * Interface tweaks including the following additional switches:
