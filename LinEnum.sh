@@ -255,7 +255,7 @@ else
 fi
 
 #known 'good' breakout binaries
-sudopwnage=`echo '' | sudo -S -l 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb' | xargs -r ls -la 2>/dev/null`
+sudopwnage=`echo '' | sudo -S -l 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb' | xargs ls -la 2>/dev/null`
 if [ "$sudopwnage" ]; then
   echo -e "$echoEscape[00;33m***Possible Sudo PWNAGE!$echoEscape[00m\n$sudopwnage" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
