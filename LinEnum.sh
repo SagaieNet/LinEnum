@@ -1,6 +1,6 @@
 #!/bin/bash
 #A script to enumerate local information from a OS X / Linux host
-v="version 0.6 (experimental)"
+v="version 0.7.0 (experimental)"
 #@oshearing
 
 #set echo escape character depending on OS
@@ -138,13 +138,16 @@ else
   :
 fi
 
-#last logged on user information
-lastlogedonusrs=`lastlog |grep -v "Never" 2>/dev/null`
-if [ "$lastlogedonusrs" ]; then
-  echo -e "$echoEscape[00;31mUsers that have previously logged onto the system:$echoEscape[00m\n$lastlogedonusrs" |tee -a $report 2>/dev/null
-  echo -e "\n" |tee -a $report 2>/dev/null
-else 
-  :
+# disable check on OS X
+if [[ "$OSTYPE" != "darwin"* ]]; then	
+  #last logged on user information
+  lastlogedonusrs=`lastlog |grep -v "Never" 2>/dev/null`
+  if [ "$lastlogedonusrs" ]; then
+    echo -e "$echoEscape[00;31mUsers that have previously logged onto the system:$echoEscape[00m\n$lastlogedonusrs" |tee -a $report 2>/dev/null
+    echo -e "\n" |tee -a $report 2>/dev/null
+  else 
+    :
+  fi
 fi
 
 #strips out username uid and gid values from /etc/passwd
