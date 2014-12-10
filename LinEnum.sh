@@ -1,6 +1,6 @@
 #!/bin/bash
 #A script to enumerate local information from a OS X / Linux host
-v="version 0.7.0 (experimental)"
+v="version 0.7.2 (experimental)"
 #@oshearing
 
 #set echo escape character depending on OS
@@ -320,7 +320,7 @@ fi
 
 #checks for if various ssh files are accessible - this can take some time so is only 'activated' with thorough scanning switch
 if [ "$thorough" = "1" ]; then
-sshfiles=`find / -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" 2>/dev/null |xargs -r ls`
+sshfiles=`find / -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" 2>/dev/null |xargs ls`
 	if [ "$sshfiles" ]; then
 		echo -e "$echoEscape[00;31mSSH keys/host information found in the following locations:$echoEscape[00m\n$sshfiles" |tee -a $report 2>/dev/null
 		echo -e "\n" |tee -a $report 2>/dev/null
@@ -526,7 +526,7 @@ else
 fi
 
 #lookup process binary path and permissisons
-procperm=`ps aux | awk '{print $11}'|xargs -r ls -la 2>/dev/null |awk '!x[$0]++'`
+procperm=`ps aux | awk '{print $11}'|xargs ls -la 2>/dev/null |awk '!x[$0]++'`
 if [ "$procperm" ]; then
   echo -e "$echoEscape[00;31mProcess binaries & associated permissions (from above list):$echoEscape[00m\n$procperm" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -535,7 +535,7 @@ else
 fi
 
 if [ "$export" ] && [ "$procperm" ]; then
-procpermbase=`ps aux | awk '{print $11}'|xargs -r ls 2>/dev/null |awk '!x[$0]++'`
+procpermbase=`ps aux | awk '{print $11}'|xargs ls 2>/dev/null |awk '!x[$0]++'`
   mkdir $format/ps-export/ 2>/dev/null
   for i in $procpermbase; do cp --parents $i $format/ps-export/; done 2>/dev/null
 else 
@@ -559,7 +559,7 @@ else
 fi
 
 #very 'rough' command to extract associated binaries from inetd.conf & show permisisons of each
-inetdbinperms=`cat /etc/inetd.conf 2>/dev/null | awk '{print $7}' |xargs -r ls -la 2>/dev/null`
+inetdbinperms=`cat /etc/inetd.conf 2>/dev/null | awk '{print $7}' |xargs ls -la 2>/dev/null`
 if [ "$inetdbinperms" ]; then
   echo -e "$echoEscape[00;31mThe related inetd binary permissions:$echoEscape[00m\n$inetdbinperms" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -591,7 +591,7 @@ else
 fi
 
 #very 'rough' command to extract associated binaries from xinetd.conf & show permisisons of each
-xinetdbinperms=`cat /etc/xinetd.conf 2>/dev/null | awk '{print $7}' |xargs -r ls -la 2>/dev/null`
+xinetdbinperms=`cat /etc/xinetd.conf 2>/dev/null | awk '{print $7}' |xargs ls -la 2>/dev/null`
 if [ "$xinetdbinperms" ]; then
   echo -e "$echoEscape[00;31mThe related xinetd binary permissions:$echoEscape[00m\n$xinetdbinperms" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -608,7 +608,7 @@ else
 fi  
 
 #init.d files NOT belonging to root!
-initdperms=`find /etc/init.d/ \! -uid 0 -type f 2>/dev/null |xargs -r ls -la 2>/dev/null`
+initdperms=`find /etc/init.d/ \! -uid 0 -type f 2>/dev/null |xargs ls -la 2>/dev/null`
 if [ "$initdperms" ]; then
   echo -e "$echoEscape[00;31m/etc/init.d/ files not belonging to root (uid 0):$echoEscape[00m\n$initdperms" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -625,7 +625,7 @@ else
 fi
 
 #init.d files NOT belonging to root!
-rcdperms=`find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null |xargs -r ls -la 2>/dev/null`
+rcdperms=`find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null |xargs ls -la 2>/dev/null`
 if [ "$rcdperms" ]; then
   echo -e "$echoEscape[00;31m/etc/rc.d/init.d files not belonging to root (uid 0):$echoEscape[00m\n$rcdperms" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -642,7 +642,7 @@ else
 fi
 
 #rc.d files NOT belonging to root!
-usrrcdperms=`find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null |xargs -r ls -la 2>/dev/null`
+usrrcdperms=`find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null |xargs ls -la 2>/dev/null`
 if [ "$usrrcdperms" ]; then
   echo -e "$echoEscape[00;31m/usr/local/etc/rc.d files not belonging to root (uid 0):$echoEscape[00m\n$usrrcdperms" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
@@ -800,7 +800,7 @@ fi
 
 #list of 'interesting' suid files - feel free to make additions
 if [ "$thorough" = "1" ]; then
-intsuid=`find / -perm -4000 -type f 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb\|pl' | xargs -r ls -la` 2>/dev/null
+intsuid=`find / -perm -4000 -type f 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb\|pl' | xargs ls -la` 2>/dev/null
 	if [ "$intsuid" ]; then
 		echo -e "$echoEscape[00;33m***Possibly interesting SUID files:$echoEscape[00m\n$intsuid" |tee -a $report 2>/dev/null
 		echo -e "\n" |tee -a $report 2>/dev/null
@@ -863,7 +863,7 @@ fi
 
 #list of 'interesting' guid files - feel free to make additions
 if [ "$thorough" = "1" ]; then
-intguid=`find / -perm -2000 -type f 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb\|pl' | xargs -r ls -la`
+intguid=`find / -perm -2000 -type f 2>/dev/null | grep -w 'nmap\|perl\|'awk'\|'find'\|'bash'\|'sh'\|'man'\|'more'\|'less'\|'vi'\|'vim'\|'nc'\|'netcat'\|python\|ruby\|lua\|irb\|pl' | xargs ls -la`
 	if [ "$intguid" ]; then
 		echo -e "$echoEscape[00;33m***Possibly interesting GUID files:$echoEscape[00m\n$intguid" |tee -a $report 2>/dev/null
 		echo -e "\n" |tee -a $report 2>/dev/null
@@ -1018,7 +1018,7 @@ else
 fi
 
 #looking for credentials in /etc/fstab
-fstab=`cat /etc/fstab 2>/dev/null |grep username |awk '{sub(/.*\username=/,"");sub(/\,.*/,"")}1'| xargs -r echo username:; cat /etc/fstab 2>/dev/null |grep password |awk '{sub(/.*\password=/,"");sub(/\,.*/,"")}1'| xargs -r echo password:; cat /etc/fstab 2>/dev/null |grep domain |awk '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1'| xargs -r echo domain:`
+fstab=`cat /etc/fstab 2>/dev/null |grep username |awk '{sub(/.*\username=/,"");sub(/\,.*/,"")}1'| xargs echo username:; cat /etc/fstab 2>/dev/null |grep password |awk '{sub(/.*\password=/,"");sub(/\,.*/,"")}1'| xargs echo password:; cat /etc/fstab 2>/dev/null |grep domain |awk '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1'| xargs echo domain:`
 if [ "$fstab" ]; then
   echo -e "$echoEscape[00;33m***Looks like there are credentials in /etc/fstab!$echoEscape[00m\n$fstab" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
